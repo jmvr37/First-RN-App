@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -15,6 +15,7 @@ import {
   Text,
   StatusBar,
   Button,
+  FlatList,
 } from 'react-native';
 
 import {
@@ -25,16 +26,28 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const App: () => React$Node = () => {
+const App = () => {
+  useEffect(() => {
+    let endpoint = 'https://robot-data.firebaseio.com/robots.json';
+    fetch(endpoint)
+      // if fetch is successful, read our JSON out of the response
+      .then(response => response.json())
+      .then(data => {
+        this.setState({data, isLoading: false});
+      })
+      .catch(error => console.log(`Error fetching JSON: ${error}`));
+  });
+
   return (
-    <>
-      <View style={styles.container}>
-        <View style={[styles.box, styles.box1]} />
-        <View style={[styles.box, styles.box2]} />
-        <View style={[styles.box, styles.box3]} />
-        <View style={[styles.box, styles.box4]} />
-      </View>
-    </>
+    <FlatList
+      data={this.state.data}
+      renderItem={({item}) => (
+        <View>
+          <Text>{item.name}</Text>
+        </View>
+      )}
+      keyExtractor={item => item.id}
+    />
   );
 };
 
