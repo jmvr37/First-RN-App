@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -27,23 +27,23 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 const App = () => {
+  const [data, setData] = useState([]);
   useEffect(() => {
     let endpoint = 'https://robot-data.firebaseio.com/robots.json';
     fetch(endpoint)
       // if fetch is successful, read our JSON out of the response
       .then(response => response.json())
       .then(data => {
-        this.setState({data, isLoading: false});
+        setData(data);
       })
       .catch(error => console.log(`Error fetching JSON: ${error}`));
-  });
-
+  }, []);
   return (
     <FlatList
-      data={this.state.data}
+      data={data}
       renderItem={({item}) => (
         <View>
-          <Text>{item.name}</Text>
+          <Text>{item.first_name}</Text>
         </View>
       )}
       keyExtractor={item => item.id}
